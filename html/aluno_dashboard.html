@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Área do Aluno - Plataforma EAD</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #e6f1ff;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background-color: #002f6c;
+      padding: 20px;
+      text-align: center;
+      color: white;
+    }
+    .container {
+      padding: 20px;
+    }
+    .info-box {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    h2 {
+      color: #002f6c;
+    }
+    .progress-bar {
+      width: 100%;
+      height: 20px;
+    }
+    .activity {
+      margin: 10px 0;
+    }
+    .notification-icon {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background-color: #002f6c;
+      color: white;
+      border-radius: 50%;
+      padding: 15px;
+      cursor: pointer;
+      font-size: 24px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      z-index: 1000;
+    }
+    .notification-count {
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      background-color: #f8c300;
+      color: white;
+      border-radius: 50%;
+      padding: 5px 10px;
+      font-size: 14px;
+      font-weight: bold;
+      z-index: 1001;
+    }
+    .notification-box {
+      display: none;
+      position: fixed;
+      top: 20%;
+      right: 20px;
+      width: 300px;
+      background-color: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+      z-index: 1001;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+    .notification-box h3 {
+      color: #002f6c;
+    }
+    .notification {
+      background-color: #f8c300;
+      padding: 10px;
+      border-radius: 5px;
+      margin-bottom: 10px;
+      color: white;
+      cursor: pointer;
+    }
+    .notification.read {
+      background-color: #d3d3d3;
+    }
+    a.download-link {
+      color: #fff;
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Área do Aluno</h1>
+  <p>Plataforma EAD - Acompanhamento de Progresso</p>
+</header>
+
+<div class="container">
+
+  <div class="info-box">
+    <h2>Progresso do Curso</h2>
+    <p>Você completou <span id="progressoTexto">0%</span> do curso!</p>
+    <progress id="progressBar" value="0" max="100" class="progress-bar"></progress>
+  </div>
+
+  <div class="info-box">
+    <h2>Conteúdos Disponíveis</h2>
+    <ul>
+      <li class="activity">
+        <input type="checkbox" id="atividade1" onclick="atualizarProgresso()"> Vídeo 1: Introdução ao Curso
+      </li>
+      <li class="activity">
+        <input type="checkbox" id="atividade2" onclick="atualizarProgresso()"> Vídeo 2: HTML Básico
+      </li>
+      <li class="activity">
+        <input type="checkbox" id="atividade3" onclick="atualizarProgresso()"> Vídeo 3: CSS Avançado
+      </li>
+    </ul>
+  </div>
+
+  <div class="info-box">
+    <h2>Interação</h2>
+    <p><a href="#">Enviar dúvida ao professor</a></p>
+  </div>
+
+  <button onclick="sair()">Sair</button>
+</div>
+
+<!-- Caixa de Notificações -->
+<div class="notification-box" id="notificationBox">
+  <h3>Caixa de Entrada</h3>
+  <!-- Notificações aparecerão aqui -->
+</div>
+
+<!-- Ícone de Notificação -->
+<div class="notification-icon" onclick="toggleNotificationBox()">
+  🔔
+  <span class="notification-count" id="notificationCount">0</span>
+</div>
+
+<script>
+  function atualizarProgresso() {
+    let totalAtividades = 3;
+    let atividadesConcluidas = 0;
+
+    if (document.getElementById('atividade1').checked) atividadesConcluidas++;
+    if (document.getElementById('atividade2').checked) atividadesConcluidas++;
+    if (document.getElementById('atividade3').checked) atividadesConcluidas++;
+
+    let progresso = (atividadesConcluidas / totalAtividades) * 100;
+
+    document.getElementById('progressBar').value = progresso;
+    document.getElementById('progressoTexto').textContent = Math.round(progresso) + '%';
+
+    localStorage.setItem("progressoAluno", progresso);
+  }
+
+  function toggleNotificationBox() {
+    const notificationBox = document.getElementById('notificationBox');
+    notificationBox.style.display = notificationBox.style.display === 'block' ? 'none' : 'block';
+  }
+
+  function carregarNotificacoesAluno() {
+    const alunoNotificacoes = document.getElementById('notificationBox');
+    alunoNotificacoes.innerHTML = "<h3>Caixa de Entrada</h3>"; // limpar antes de carregar
+
+    const notificacoes = JSON.parse(localStorage.getItem('notificacoesAluno')) || [];
+
+    if (notificacoes.length === 0) {
+      alunoNotificacoes.innerHTML += "<p>Não há novas notificações.</p>";
+    } else {
+      notificacoes.forEach((notificacao, index) => {
+        const divNotificacao = document.createElement('div');
+        divNotificacao.classList.add('notification');
+        if (notificacao.lido) {
+          divNotificacao.classList.add('read');
+        }
+
+        divNotificacao.innerHTML = `
+          <strong>Aviso:</strong> ${notificacao.descricao}<br>
+          <button onclick="baixarArquivo(${index})" style="margin-top:5px; background: #002f6c; color: white; padding: 5px 10px; border: none; border-radius: 5px;">Baixar Arquivo</button>
+        `;
+
+        divNotificacao.onclick = function() {
+          notificacao.lido = true;
+          localStorage.setItem('notificacoesAluno', JSON.stringify(notificacoes));
+          divNotificacao.classList.add('read');
+          atualizarContagemDeNotificacoes();
+        };
+
+        alunoNotificacoes.appendChild(divNotificacao);
+      });
+    }
+  }
+
+  function atualizarContagemDeNotificacoes() {
+    const notificacoes = JSON.parse(localStorage.getItem('notificacoesAluno')) || [];
+    const naoLidas = notificacoes.filter(n => !n.lido).length;
+    document.getElementById('notificationCount').textContent = naoLidas;
+  }
+
+  function baixarArquivo(index) {
+    const notificacoes = JSON.parse(localStorage.getItem('notificacoesAluno')) || [];
+    const notificacao = notificacoes[index];
+
+    if (!notificacao || !notificacao.arquivo) {
+      alert('Arquivo não encontrado.');
+      return;
+    }
+
+    const link = document.createElement('a');
+    link.href = notificacao.arquivo;
+    link.download = `arquivo_notificacao_${index + 1}`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
+
+  window.onload = function() {
+    const progresso = localStorage.getItem("progressoAluno") || 0;
+    document.getElementById("progressBar").value = progresso;
+    document.getElementById("progressoTexto").textContent = Math.round(progresso) + '%';
+
+    carregarNotificacoesAluno();
+    atualizarContagemDeNotificacoes();
+  };
+
+  function sair() {
+    window.location.href = "Login.html";
+  }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Painel do Professor - Plataforma EAD</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #e6f1ff;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background-color: #002f6c;
+      padding: 20px;
+      text-align: center;
+      color: white;
+    }
+    .container {
+      padding: 20px;
+    }
+    .card {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    h2 {
+      color: #002f6c;
+    }
+    progress {
+      width: 100%;
+      height: 20px;
+    }
+    .actions a {
+      background-color: #002f6c;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-size: 16px;
+      margin-top: 20px;
+      display: inline-block;
+      transition: background-color 0.3s ease;
+    }
+    .actions a:hover {
+      background-color: #f8c300;
+      color: #002f6c;
+    }
+    footer {
+      text-align: center;
+      margin-top: 30px;
+    }
+    button {
+      background-color: #002f6c;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #f8c300;
+      color: #002f6c;
+    }
+    .support-icon {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background-color: #002f6c;
+      color: white;
+      border-radius: 50%;
+      padding: 15px;
+      cursor: pointer;
+      font-size: 24px;
+      z-index: 1000;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+    .support-box {
+      display: none;
+      position: fixed;
+      bottom: 80px;
+      right: 20px;
+      width: 300px;
+      background-color: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+      z-index: 1001;
+    }
+    .support-box h3 {
+      color: #002f6c;
+    }
+    .support-box p {
+      font-size: 14px;
+      color: #333;
+    }
+    .notification {
+      background-color: #f8c300;
+      padding: 10px;
+      border-radius: 5px;
+      margin-bottom: 10px;
+      color: white;
+      cursor: pointer;
+    }
+    .notification.read {
+      background-color: #d3d3d3;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Painel do Professor</h1>
+  <p>Gerencie suas turmas e conteúdos</p>
+</header>
+
+<div class="container">
+  <!-- Rastreio de Vídeos -->
+  <div class="card">
+    <h2>Rastreio de Vídeos Visualizados</h2>
+    <ul>
+      <li>
+        <strong>Vídeo 1: Introdução ao Curso</strong>
+        <progress id="video1" value="0" max="100"></progress>
+        <p id="video1-status">0% assistido</p>
+      </li>
+      <li>
+        <strong>Vídeo 2: HTML Básico</strong>
+        <progress id="video2" value="0" max="100"></progress>
+        <p id="video2-status">0% assistido</p>
+      </li>
+      <li>
+        <strong>Vídeo 3: CSS Avançado</strong>
+        <progress id="video3" value="0" max="100"></progress>
+        <p id="video3-status">0% assistido</p>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Registro de Materiais Baixados -->
+  <div class="card">
+    <h2>Materiais Baixados</h2>
+    <ul>
+      <li>Material 1: PDF do Módulo 1 - <span id="download1-status">Não Baixado</span></li>
+      <li>Material 2: PDF do Módulo 2 - <span id="download2-status">Não Baixado</span></li>
+      <li>Material 3: PDF do Módulo 3 - <span id="download3-status">Não Baixado</span></li>
+    </ul>
+  </div>
+
+  <!-- Indicadores de Desempenho -->
+  <div class="card">
+    <h2>Indicadores de Desempenho</h2>
+    <p>Percentual de Conclusão do Curso: <span id="percentual-conclusao">75%</span></p>
+    <div class="actions">
+      <a href="#">Ver Relatório Detalhado</a>
+    </div>
+  </div>
+
+  <!-- Botão Adicionar Aviso -->
+  <div class="card">
+    <h2>Adicionar Aviso</h2>
+    <button onclick="mostrarFormularioAviso()">Adicionar Aviso</button>
+  </div>
+
+  <!-- Formulário de Aviso -->
+  <div id="formularioAviso" style="display: none; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
+    <h3>Anexar Aviso</h3>
+    <label for="fileInput">Escolher Arquivo (Vídeo ou PDF):</label>
+    <input type="file" id="fileInput" accept=".pdf,video/*" />
+    <br><br>
+    <textarea placeholder="Descreva o aviso aqui..." rows="4" style="width: 100%;"></textarea>
+    <br><br>
+    <button onclick="enviarAviso()">Enviar Aviso</button>
+  </div>
+
+  <footer>
+    <button onclick="sair()">Sair</button>
+  </footer>
+</div>
+
+<!-- Caixa de Suporte Técnico -->
+<div class="support-box" id="supportBox">
+  <h3>Suporte Técnico e Dúvidas Administrativas</h3>
+  <p>Tem alguma dúvida ou problema técnico? Nossa equipe de suporte está à disposição para ajudá-lo.</p>
+  <p><strong>Como podemos ajudar?</strong></p>
+  <textarea placeholder="Descreva seu problema ou dúvida aqui..." rows="4" style="width: 100%;"></textarea>
+  <button style="margin-top: 10px; background-color: #002f6c; color: white;">Enviar</button>
+</div>
+
+<!-- Ícone de Fone de Ouvido para Suporte -->
+<div class="support-icon" onclick="toggleSupportBox()">🎧</div>
+
+<script>
+  // Função para mostrar o formulário de aviso
+  function mostrarFormularioAviso() {
+    document.getElementById('formularioAviso').style.display = 'block';
+  }
+
+  // Função para enviar o aviso
+  function enviarAviso() {
+    const fileInput = document.getElementById('fileInput');
+    const textarea = document.querySelector('textarea');
+    const avisoDescricao = textarea.value;
+    const arquivo = fileInput.files[0];
+
+    if (!arquivo || !avisoDescricao) {
+      alert("Por favor, selecione um arquivo e descreva o aviso.");
+      return;
+    }
+
+    // Envia os dados do aviso (por exemplo, você pode salvar isso no backend)
+    alert("Aviso enviado com sucesso!");
+
+    // Adiciona a notificação na área do aluno
+    adicionarNotificacaoAluno(avisoDescricao, arquivo.name);
+    
+    // Limpa o formulário
+    document.getElementById('formularioAviso').style.display = 'none';
+    textarea.value = '';
+    fileInput.value = '';
+  }
+
+  // Função para adicionar a notificação na caixa de entrada do aluno
+  function adicionarNotificacaoAluno(descricao, arquivoNome) {
+    // Salva no localStorage para que o aluno possa ver a notificação
+    const notificacoes = JSON.parse(localStorage.getItem('notificacoesAluno')) || [];
+    const novaNotificacao = {
+      descricao: descricao,
+      arquivo: arquivoNome,
+      lido: false
+    };
+    notificacoes.push(novaNotificacao);
+    localStorage.setItem('notificacoesAluno', JSON.stringify(notificacoes));
+
+    // Atualiza a contagem de notificações
+    atualizarContagemNotificacoes();
+  }
+
+  // Função para atualizar a contagem de notificações
+  function atualizarContagemNotificacoes() {
+    const notificacoes = JSON.parse(localStorage.getItem('notificacoesAluno')) || [];
+    const contadorNotificacoes = document.getElementById('contadorNotificacoes');
+    contadorNotificacoes.textContent = notificacoes.length;
+  }
+
+  // Função para alternar a exibição da Caixa de Suporte
+  function toggleSupportBox() {
+    const supportBox = document.getElementById('supportBox');
+    supportBox.style.display = supportBox.style.display === 'block' ? 'none' : 'block';
+  }
+
+  // Função de logout
+  function sair() {
+    window.location.href = "Login.html";
+  }
+</script>
+
+</body>
+</html>
