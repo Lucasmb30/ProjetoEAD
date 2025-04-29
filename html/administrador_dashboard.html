@@ -273,6 +273,36 @@
         <input type="text" id="searchCurso" placeholder="Buscar cursos..." oninput="filtrarCursos()">
         <button onclick="filtrarCursos()"><i class="fas fa-search"></i></button>
       </div>
+
+      <!-- Modal -->
+      <div id="modalCriarCurso" class="modal">
+        <div class="modal-content">
+          <span class="close" onclick="fecharModalCriarCurso()">&times;</span>
+          <h2>Criar Curso</h2>
+
+          <!-- ✅ FORMULÁRIO MODIFICADO -->
+          <form id="formCriarCurso">
+            <div class="form-row"> <!-- Novo container para alinhamento lado a lado -->
+              <div class="form-group"> <!-- Grupo 1 -->
+                <label for="nomeCurso">Nome do Curso:</label>
+                <input type="text" id="nomeCurso" name="nomeCurso" required>
+              </div>
+
+              <div class="form-group"> <!-- Grupo 2 -->
+                <label for="cargaHoraria">Carga Horária:</label>
+                <input type="number" id="cargaHoraria" name="cargaHoraria" required>
+              </div>
+            </div>
+
+            <div class="button-container"> <!-- ✅ Centraliza o botão -->
+              <button type="submit">Criar Curso</button>
+            </div>
+          </form>
+          <!-- ✅ FIM do formulário modificado -->
+
+        </div>
+      </div>
+
       <!-- Área para exibir os cursos cadastrados -->
       <div class="visualizacao-container" id="visualizacaoCursos"></div>
     </div>
@@ -319,5 +349,37 @@
       window.location.href = "Login.html";
     }
   </script>
-    
+
   <!-- Aqui começaria o <script> com todas as funções JS melhoradas (validação, salvar, editar, dark mode etc) -->
+
+  <script>
+    // Função para abrir o modal de criação de curso
+    function abrirModalCriarCurso() {
+      document.getElementById("modalCriarCurso").classList.add("show");
+    }
+
+    // Função para fechar o modal de criação de curso
+    function fecharModalCriarCurso() {
+      document.getElementById("modalCriarCurso").classList.remove("show");
+    }
+
+    // Função para o formulário de "Criar Curso" ser enviado
+    document.getElementById("formCriarCurso").addEventListener("submit", function (event) {
+      event.preventDefault(); // Evita o comportamento padrão do formulário de recarregar a página
+      let nomeCurso = document.getElementById("nomeCurso").value;
+      let cargaHoraria = document.getElementById("cargaHoraria").value;
+
+      // Aqui você pode adicionar a lógica para salvar o curso, seja em um banco de dados ou uma lista temporária
+
+      // Exibir mensagem de sucesso ou erro
+      alert("Curso '" + nomeCurso + "' criado com sucesso!");
+
+      // Fechar o modal após o envio
+      fecharModalCriarCurso();
+    });
+
+    // Função para alternar entre o modo claro e escuro
+    function toggleDarkMode() {
+      document.body.classList.toggle("dark-mode");
+    }
+  </script>
